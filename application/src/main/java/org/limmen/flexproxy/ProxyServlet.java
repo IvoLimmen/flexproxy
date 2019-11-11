@@ -45,6 +45,9 @@ public class ProxyServlet extends HttpServlet {
     if (req.getPathInfo() != null) {
       url.append(req.getPathInfo());
     }      
+    if (req.getQueryString() != null) {
+      url.append("?").append(req.getQueryString());
+    }
 
     log.info("{} {}", req.getMethod(), url);
 

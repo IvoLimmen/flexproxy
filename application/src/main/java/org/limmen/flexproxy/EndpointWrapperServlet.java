@@ -34,12 +34,17 @@ public class EndpointWrapperServlet extends HttpServlet {
     if (req.getPathInfo() != null) {
       fullUrl.append(req.getPathInfo());
     }
+    if (req.getQueryString() != null) {
+      fullUrl.append("?").append(req.getQueryString());
+    }
+
+    log.debug("URL: {}", fullUrl);
 
     for (Endpoint endpoint : this.service.getEndpoints()) {
       if (endpoint.getMethod().equalsIgnoreCase(req.getMethod())) {
         if (fullUrl.toString().equalsIgnoreCase(endpoint.getUrl())) {
           
-          endpoint.getResult().handleResult(res);
+          endpoint.getResult().handleResult(req, res);
           return;
         }
       }

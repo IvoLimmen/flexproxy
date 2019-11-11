@@ -35,10 +35,21 @@ public class Main {
           .service(service)
           .build());
 
-      context.addServlet(holder, service.getMountpoint() + "/*");
+      context.addServlet(holder, createMountpoint(service.getMountpoint()));
     });
 
     server.start();
     server.join();
+  }
+
+  private static String createMountpoint(String mountpoint) {
+    String newValue = mountpoint;
+    if (!newValue.startsWith("/")) {
+      newValue = "/" + newValue;
+    }
+    if (!newValue.endsWith("/")) {
+      newValue = newValue + "/";
+    }
+    return newValue + "*";
   }
 }
