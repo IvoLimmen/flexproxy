@@ -1,14 +1,17 @@
 package org.limmen.flexproxy;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+
 import org.limmen.flexproxy.domain.Endpoint;
 import org.limmen.flexproxy.domain.Service;
+
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class EndpointWrapperServlet extends HttpServlet {
@@ -24,6 +27,7 @@ public class EndpointWrapperServlet extends HttpServlet {
     this.service = service;
     this.proxyServlet = ProxyServlet.builder()
         .url(service.getProxyUrl())
+        .mountpoint(service.getMountpoint())
         .build();
     log.info("Service contains {} endpoints", this.service.getEndpoints().size());
   }
@@ -33,6 +37,9 @@ public class EndpointWrapperServlet extends HttpServlet {
     StringBuilder fullUrl = new StringBuilder();
     if (req.getPathInfo() != null) {
       fullUrl.append(req.getPathInfo());
+    }
+    if (req.getQueryString() != null) {
+      fullUrl.append("?").append(req.getQueryString());
     }
 
     for (Endpoint endpoint : this.service.getEndpoints()) {
