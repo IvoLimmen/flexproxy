@@ -7,6 +7,7 @@
   </appender>
 
   <logger name="org.eclipse.jetty" level="INFO"/>
+  <logger name="org.limmen.flexproxy" level="DEBUG"/>
 
   <root level="DEBUG">
     <appender-ref ref="STDOUT"/>

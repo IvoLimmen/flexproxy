@@ -46,6 +46,7 @@ public class ProxyServlet extends HttpServlet {
     StringBuilder url = new StringBuilder();
 
     url.append(this.url);
+    url.append("/");
     url.append(this.mountpoint);
     if (req.getPathInfo() != null) {
       url.append(req.getPathInfo());

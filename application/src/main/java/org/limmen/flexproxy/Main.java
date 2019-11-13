@@ -43,13 +43,6 @@ public class Main {
   }
 
   private static String createMountpoint(String mountpoint) {
-    String newValue = mountpoint;
-    if (!newValue.startsWith("/")) {
-      newValue = "/" + newValue;
-    }
-    if (!newValue.endsWith("/")) {
-      newValue = newValue + "/";
-    }
-    return newValue + "*";
+    return "/" + mountpoint + "/*";
   }
 }

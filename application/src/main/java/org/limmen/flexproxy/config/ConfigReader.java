@@ -29,10 +29,13 @@ public class ConfigReader {
   private static Configuration check(Configuration configuration) {
     configuration.getServices().forEach(service -> {
       if (service.getMountpoint().startsWith("/")) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(String.format("Mountpoint %s may not start with /", service.getMountpoint()));
       }
       if (service.getMountpoint().endsWith("/")) {
-        throw new IllegalArgumentException();                
+        throw new IllegalArgumentException(String.format("Mountpoint %s may not end with /", service.getMountpoint()));
+      }
+      if (service.getProxyUrl().endsWith("/")) {
+        throw new IllegalArgumentException(String.format("ProxyUrl %s may not end with /", service.getMountpoint()));
       }
     });
     return configuration;
