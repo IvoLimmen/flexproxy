@@ -38,7 +38,7 @@ Example configuration
     <endpoints>
       <endpoint>
         <method>GET</method>
-        <url>/4</url>
+        <url match="endswith">/4</url>
         <!-- Return a different status -->
         <status>
           <status_code>404</status_code>
@@ -47,7 +47,7 @@ Example configuration
       </endpoint>
       <endpoint>
         <method>GET</method>
-        <url>/7</url>
+        <url match="contains">/7</url>
         <!-- Return a different status -->
         <status>
           <status_code>500</status_code>
@@ -67,10 +67,15 @@ Example configuration
   </service>
 </configuration>
 ```
+The `match` attribute on `url` can contain the following values:
+ 
+ * equals - Unspecified match will be this and the entire URL after the mountpoint must match.
+ * endswith - the end of the url must be the same.
+ * startswith - the start of the url must match.
+ * contains - the given url must be a part of the url requested.
 
 # What's next?
 
 * Test more
 * Try some stuff with other methods apart from GET
-* Try with query parameters
 * Add regular expression handling for specific use cases
