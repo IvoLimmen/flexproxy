@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,14 +28,16 @@ public class ProxyServlet extends HttpServlet {
   private static final long serialVersionUID = -1;  
   private final HttpClient client;
   private final String url;
+  private final String mountpoint;
 
   @Builder
-  public ProxyServlet(final String url) {
+  public ProxyServlet(final String url, final String mountpoint) {
     this.url = url;
     client = HttpClient.newBuilder()
         .sslContext(SSLContextProvider.getSSLContext())
         .connectTimeout(Duration.ofSeconds(30))
         .build();
+    this.mountpoint = mountpoint;
   }
 
   @Override
@@ -42,6 +46,7 @@ public class ProxyServlet extends HttpServlet {
     StringBuilder url = new StringBuilder();
 
     url.append(this.url);
+    url.append(this.mountpoint);
     if (req.getPathInfo() != null) {
       url.append(req.getPathInfo());
     }      
