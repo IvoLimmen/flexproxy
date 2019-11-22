@@ -31,40 +31,42 @@ Example configuration
 <configuration>
   <!-- Port the application runs on -->
   <port>8080</port>
-  <service>
-    <!-- Starting point of the service -->
-    <mountpoint>/api/service</mountpoint>
-    <proxy_url>[[ANY URL]]</proxy_url>
-    <endpoints>
-      <endpoint>
-        <method>GET</method>
-        <url match="endswith">/4</url>
-        <!-- Return a different status -->
-        <status>
-          <status_code>404</status_code>
-          <message>Not found</message>          
-        </status>
-      </endpoint>
-      <endpoint>
-        <method>GET</method>
-        <url match="contains">/7</url>
-        <!-- Return a different status -->
-        <status>
-          <status_code>500</status_code>
-          <message>Oeps</message>          
-        </status>
-      </endpoint>
-      <endpoint>
-        <method>GET</method>
-        <url>/5</url>
-        <!-- Return a different response -->
-        <static_file>
-          <content_type>text/json</content_type>
-          <file_name>/full/path/to/file.json</file_name>
-        </static_file>
-      </endpoint>
-    </endpoints>
-  </service>
+  <services>
+    <service>
+      <!-- Starting point of the service -->
+      <mountpoint>/api/service</mountpoint>
+      <proxy_url>[[ANY URL]]</proxy_url>
+      <endpoints>
+        <endpoint>
+          <method>GET</method>
+          <url match="endswith">/4</url>
+          <!-- Return a different status -->
+          <status>
+            <status_code>404</status_code>
+            <message>Not found</message>
+          </status>
+        </endpoint>
+        <endpoint>
+          <method>GET</method>
+          <url match="contains">/7</url>
+          <!-- Return a different status -->
+          <status>
+            <status_code>500</status_code>
+            <message>Oeps</message>
+          </status>
+        </endpoint>
+        <endpoint>
+          <method>GET</method>
+          <url>/5</url>
+          <!-- Return a different response -->
+          <static_file>
+            <content_type>text/json</content_type>
+            <file_name>/full/path/to/file.json</file_name>
+          </static_file>
+        </endpoint>
+      </endpoints>
+    </service>
+  </services>
 </configuration>
 ```
 The `match` attribute on `url` can contain the following values:

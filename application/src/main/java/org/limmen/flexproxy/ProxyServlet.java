@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProxyServlet extends HttpServlet {
 
-  private static final long serialVersionUID = -1;  
+  private static final long serialVersionUID = -1;
   private final HttpClient client;
   private final String url;
   private final String mountpoint;
@@ -34,9 +34,9 @@ public class ProxyServlet extends HttpServlet {
   public ProxyServlet(final String url, final String mountpoint) {
     this.url = url;
     client = HttpClient.newBuilder()
-        .sslContext(SSLContextProvider.getSSLContext())
-        .connectTimeout(Duration.ofSeconds(30))
-        .build();
+            .sslContext(SSLContextProvider.getSSLContext())
+            .connectTimeout(Duration.ofSeconds(30))
+            .build();
     this.mountpoint = mountpoint;
   }
 
@@ -50,7 +50,7 @@ public class ProxyServlet extends HttpServlet {
     url.append(this.mountpoint);
     if (req.getPathInfo() != null) {
       url.append(req.getPathInfo());
-    }      
+    }
     if (req.getQueryString() != null) {
       url.append("?").append(req.getQueryString());
     }
@@ -61,9 +61,9 @@ public class ProxyServlet extends HttpServlet {
     Enumeration<String> reqHeaders = req.getHeaderNames();
     while (reqHeaders.hasMoreElements()) {
       String key = reqHeaders.nextElement();
-      if (isAllowedHeaderKey(key)) {
+      if (isAllowedHeaderKey(req, key)) {
         headers.add(key);
-        headers.add(req.getHeader(key));  
+        headers.add(req.getHeader(key));
       }
     }
 
@@ -75,18 +75,18 @@ public class ProxyServlet extends HttpServlet {
         bodyPublisher = BodyPublishers.ofString(req.getReader().lines().collect(Collectors.joining()));
       }
 
-      HttpRequest proxyReq = HttpRequest.newBuilder()      
-          .method(req.getMethod(), bodyPublisher)
-          .headers(headers.toArray(new String[headers.size()]))
-          .uri(URI.create(url.toString()))
-          .build();
-      
+      HttpRequest proxyReq = HttpRequest.newBuilder()
+              .method(req.getMethod(), bodyPublisher)
+              .headers(headers.toArray(new String[headers.size()]))
+              .uri(URI.create(url.toString()))
+              .build();
+
       HttpResponse<String> proxyRes = client.send(proxyReq, BodyHandlers.ofString());
 
-      proxyRes.headers().map().entrySet().forEach(entry -> {        
+      proxyRes.headers().map().entrySet().forEach(entry -> {
         String value = entry.getValue().iterator().next();
         res.setHeader(entry.getKey(), value);
-      });    
+      });
       res.setStatus(proxyRes.statusCode());
       res.getWriter().write(proxyRes.body());
       res.getWriter().flush();
@@ -96,8 +96,14 @@ public class ProxyServlet extends HttpServlet {
     }
   }
 
-  public boolean isAllowedHeaderKey(String key) {
-    // Host is not allowed to be set as the webserver sets it
-    return !key.equalsIgnoreCase("host");
+  public boolean isAllowedHeaderKey(HttpServletRequest req, String key) {
+    if (key.equalsIgnoreCase("host")) {
+      return false;
+    }
+    if (req.getMethod().equals("POST")) {
+      return !key.equalsIgnoreCase("content-length");
+    }
+
+    return true;
   }
 }
