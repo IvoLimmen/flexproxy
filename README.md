@@ -34,6 +34,7 @@ Example configuration
   <services>
     <service>
       <!-- Starting point of the service -->
+      <name>XX</name>
       <mountpoint>/api/service</mountpoint>
       <proxy_url>[[ANY URL]]</proxy_url>
       <endpoints>

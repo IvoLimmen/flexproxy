@@ -1,11 +1,14 @@
 package org.limmen.flexproxy.domain;
 
+import static javax.xml.bind.annotation.XmlAccessType.FIELD;
+
 import java.util.ArrayList;
 import java.util.List;
-import static javax.xml.bind.annotation.XmlAccessType.FIELD;
+
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+
 import lombok.Data;
 
 @Data
@@ -14,6 +17,8 @@ public class Service {
 
   private String mountpoint;
 
+  private String name;
+  
   @XmlElement(name = "proxy_url")
   private String proxyUrl;
 

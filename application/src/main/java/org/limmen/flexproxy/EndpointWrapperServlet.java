@@ -29,7 +29,7 @@ public class EndpointWrapperServlet extends HttpServlet {
         .url(service.getProxyUrl())
         .mountpoint(service.getMountpoint())
         .build();
-    log.info("Service contains {} endpoints", this.service.getEndpoints().size());
+    log.info("Service '{}' contains {} endpoints", this.service.getName(), this.service.getEndpoints().size());
   }
 
   @Override
@@ -42,16 +42,25 @@ public class EndpointWrapperServlet extends HttpServlet {
       fullUrl.append("?").append(req.getQueryString());
     }
 
+    log.info("Request: {}", fullUrl);
+
     for (Endpoint endpoint : this.service.getEndpoints()) {
       if (endpoint.getMethod().equalsIgnoreCase(req.getMethod())) {        
-        String url = endpoint.getUrl().getUrlValue();
-        String match = endpoint.getUrl().getMatch();
-        log.debug("url={},match={}", url, match);
-        if (match.equalsIgnoreCase("equals") && fullUrl.toString().equalsIgnoreCase(url) ||
-          match.equalsIgnoreCase("contains") && fullUrl.toString().contains(url) ||
-          match.equalsIgnoreCase("endswith") && fullUrl.toString().endsWith(url) ||
-          match.equalsIgnoreCase("startswith") && fullUrl.toString().startsWith(url)) {
-          
+        if (endpoint.getUrl() != null) {
+          String url = endpoint.getUrl().getUrlValue();
+          String match = endpoint.getUrl().getMatch();
+          log.debug("url={},match={}", url, match);
+          if (match.equalsIgnoreCase("equals") && fullUrl.toString().equalsIgnoreCase(url) ||
+            match.equalsIgnoreCase("contains") && fullUrl.toString().contains(url) ||
+            match.equalsIgnoreCase("endswith") && fullUrl.toString().endsWith(url) ||
+            match.equalsIgnoreCase("startswith") && fullUrl.toString().startsWith(url)) {
+            
+            log.info("Handle {} for URL '{}' on service '{}'", endpoint.getMethod(), url, service.getName());
+            endpoint.getResult().handleResult(req, res);
+            return;
+          }  
+        } else {
+          log.info("Handle {} on service '{}'", endpoint.getMethod(), service.getName());
           endpoint.getResult().handleResult(req, res);
           return;
         }
@@ -59,6 +68,7 @@ public class EndpointWrapperServlet extends HttpServlet {
     }
 
     // else: proxy it
+    log.info("Handle proxy call on service '{}'", service.getName());
     this.proxyServlet.service(req, res);
   }
 }

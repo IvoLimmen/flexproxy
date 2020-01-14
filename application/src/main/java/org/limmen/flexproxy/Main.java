@@ -2,13 +2,15 @@ package org.limmen.flexproxy;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import lombok.extern.slf4j.Slf4j;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.limmen.flexproxy.config.ConfigReader;
 import org.limmen.flexproxy.domain.Configuration;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Main {
@@ -30,7 +32,7 @@ public class Main {
 
     configuration.getServices().forEach(service -> {
 
-      log.info("Mounting service at {} for proxy {}", service.getMountpoint(), service.getProxyUrl());
+      log.info("Mounting service '{}' at {} for proxy {}", service.getName(), service.getMountpoint(), service.getProxyUrl());
       ServletHolder holder = new ServletHolder(EndpointWrapperServlet.builder()
           .service(service)
           .build());
