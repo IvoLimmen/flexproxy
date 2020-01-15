@@ -100,7 +100,7 @@ public class ProxyServlet extends HttpServlet {
     if (key.equalsIgnoreCase("host")) {
       return false;
     }
-    if (req.getMethod().equals("POST")) {
+    if (req.getMethod().equals("POST") || req.getMethod().equals("PUT")) {
       return !key.equalsIgnoreCase("content-length");
     }
 
