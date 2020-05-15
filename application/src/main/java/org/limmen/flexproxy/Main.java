@@ -34,7 +34,7 @@ public class Main {
 
       log.info("Mounting service '{}' at {} for proxy {}", service.getName(), service.getMountpoint(), service.getProxyUrl());
       ServletHolder holder = new ServletHolder(EndpointWrapperServlet.builder()
-          .service(service)
+          .service(service)          
           .build());
 
       context.addServlet(holder, createMountpoint(service.getMountpoint()));

@@ -27,17 +27,19 @@ public class ProxyServlet extends HttpServlet {
 
   private static final long serialVersionUID = -1;
   private final HttpClient client;
+  private final boolean debug;
   private final String url;
   private final String mountpoint;
 
   @Builder
-  public ProxyServlet(final String url, final String mountpoint) {
+  public ProxyServlet(final String url, final boolean debug, final String mountpoint) {
     this.url = url;
     client = HttpClient.newBuilder()
             .sslContext(SSLContextProvider.getSSLContext())
             .connectTimeout(Duration.ofSeconds(30))
             .build();
     this.mountpoint = mountpoint;
+    this.debug = debug;
   }
 
   @Override
@@ -64,6 +66,9 @@ public class ProxyServlet extends HttpServlet {
       if (isAllowedHeaderKey(req, key)) {
         headers.add(key);
         headers.add(req.getHeader(key));
+        if (debug) {
+          log.debug("> Header: {}={}", key, req.getHeader(key));
+        }
       }
     }
 
@@ -72,7 +77,9 @@ public class ProxyServlet extends HttpServlet {
       if (req.getMethod().equalsIgnoreCase("GET") || req.getMethod().equalsIgnoreCase("DELETE")) {
         bodyPublisher = BodyPublishers.noBody();
       } else {
-        bodyPublisher = BodyPublishers.ofString(req.getReader().lines().collect(Collectors.joining()));
+        String body = req.getReader().lines().collect(Collectors.joining());
+        log.debug("> Body: {}", body);
+        bodyPublisher = BodyPublishers.ofString(body);
       }
 
       HttpRequest proxyReq = HttpRequest.newBuilder()
@@ -84,11 +91,17 @@ public class ProxyServlet extends HttpServlet {
       HttpResponse<String> proxyRes = client.send(proxyReq, BodyHandlers.ofString());
 
       proxyRes.headers().map().entrySet().forEach(entry -> {
+        String key = entry.getKey();
         String value = entry.getValue().iterator().next();
-        res.setHeader(entry.getKey(), value);
+        log.debug("< Header: {}={}", key, value);
+        res.setHeader(key, value);
       });
+      
+      String body = proxyRes.body();
+      log.debug("< Statuscode: {}", proxyRes.statusCode());
+      log.debug("< Body: {}", body);
       res.setStatus(proxyRes.statusCode());
-      res.getWriter().write(proxyRes.body());
+      res.getWriter().write(body);
       res.getWriter().flush();
 
     } catch (IOException | InterruptedException e) {
@@ -101,7 +114,8 @@ public class ProxyServlet extends HttpServlet {
       return false;
     }
     if (req.getMethod().equals("POST") || req.getMethod().equals("PUT")) {
-      return !key.equalsIgnoreCase("content-length");
+      return !key.equalsIgnoreCase("content-length") 
+        && !key.equalsIgnoreCase("connection");
     }
 
     return true;

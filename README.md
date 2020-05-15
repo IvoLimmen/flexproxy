@@ -37,6 +37,8 @@ Example configuration
       <name>XX</name>
       <mountpoint>/api/service</mountpoint>
       <proxy_url>[[ANY URL]]</proxy_url>
+      <!-- Log all data passing through -->
+      <debug>true</debug>
       <endpoints>
         <endpoint>
           <method>GET</method>

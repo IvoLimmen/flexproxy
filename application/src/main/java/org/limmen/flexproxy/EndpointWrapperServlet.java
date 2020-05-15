@@ -28,6 +28,7 @@ public class EndpointWrapperServlet extends HttpServlet {
     this.proxyServlet = ProxyServlet.builder()
         .url(service.getProxyUrl())
         .mountpoint(service.getMountpoint())
+        .debug(service.isDebug())
         .build();
     log.info("Service '{}' contains {} endpoints", this.service.getName(), this.service.getEndpoints().size());
   }

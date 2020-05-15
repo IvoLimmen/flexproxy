@@ -19,6 +19,8 @@ public class Service {
 
   private String name;
   
+  private boolean debug;
+
   @XmlElement(name = "proxy_url")
   private String proxyUrl;
 
