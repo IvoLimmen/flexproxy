@@ -21,7 +21,6 @@ public class Main {
 
     Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
     Server server = new Server(configuration.getPort());
-    server.setErrorHandler(new CustomErrorHandler());
 
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
