@@ -19,5 +19,5 @@ public class Endpoint {
   @XmlElements({
     @XmlElement(name = "status", type = Status.class),
     @XmlElement(name = "static_file", type = StaticFile.class)})
-  private AbstractResult result;
+  private Result result;
 }

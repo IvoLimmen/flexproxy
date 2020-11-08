@@ -16,11 +16,11 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @XmlAccessorType(FIELD)
 @XmlRootElement(name = "statis_file")
 @Slf4j
-public class StaticFile extends AbstractResult {
+public class StaticFile implements Result {
 
   @XmlElement(name = "content_type", defaultValue = "text/json")
   private String contentType;

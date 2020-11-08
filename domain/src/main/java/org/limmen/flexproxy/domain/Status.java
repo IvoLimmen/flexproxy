@@ -13,11 +13,11 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @XmlAccessorType(FIELD)
 @XmlRootElement(name = "status")
 @Slf4j
-public class Status extends AbstractResult {
+public class Status implements Result {
   
   @XmlElement(name = "status_code")
   private int statusCode;

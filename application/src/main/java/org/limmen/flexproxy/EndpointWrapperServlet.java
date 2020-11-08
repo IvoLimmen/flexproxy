@@ -50,10 +50,7 @@ public class EndpointWrapperServlet extends HttpServlet {
           String url = endpoint.getUrl().getUrlValue();
           String match = endpoint.getUrl().getMatch();
           log.debug("url={},match={}", url, match);
-          if (match.equalsIgnoreCase("equals") && fullUrl.toString().equalsIgnoreCase(url) ||
-            match.equalsIgnoreCase("contains") && fullUrl.toString().contains(url) ||
-            match.equalsIgnoreCase("endswith") && fullUrl.toString().endsWith(url) ||
-            match.equalsIgnoreCase("startswith") && fullUrl.toString().startsWith(url)) {
+          if (endpoint.getResult().canHandle(match, fullUrl.toString(), url)) {
             
             log.info("Handle {} for URL '{}' on service '{}'", endpoint.getMethod(), url, service.getName());
             endpoint.getResult().handleResult(req, res);
