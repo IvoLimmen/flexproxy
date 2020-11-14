@@ -24,7 +24,7 @@ public class Status implements Result {
   private String message;   
 
   @Override
-  public void handleResult(HttpServletRequest req, HttpServletResponse response) throws IOException {
+  public void handleResult(HttpServletRequest request, HttpServletResponse response) throws IOException {
     log.debug("Response[statusCode={},message={}]", getStatusCode(), getMessage());
     response.sendError(getStatusCode(), getMessage());
   }   

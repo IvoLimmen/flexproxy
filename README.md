@@ -21,7 +21,7 @@ Type `mvn -pl application exec:java`
 This is not a proxy. It can be used as a proxy but:
 
 - You can alter specific requests to return a different status code.
-- You can let it return a specific file to alter the reponse you would normally get from a specific service.
+- You can let it return a specific file to alter the response you would normally get from a specific service.
 
 # Configuration
 
