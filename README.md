@@ -22,6 +22,7 @@ This is not a proxy. It can be used as a proxy but:
 
 - You can alter specific requests to return a different status code.
 - You can let it return a specific file to alter the response you would normally get from a specific service.
+- All posts can be stored
 
 # Configuration
 
@@ -39,6 +40,7 @@ Example configuration
       <proxy_url>[[ANY URL]]</proxy_url>
       <!-- Log all data passing through -->
       <debug>true</debug>
+      <save_posts>true</save_posts>
       <endpoints>
         <endpoint>
           <method>GET</method>

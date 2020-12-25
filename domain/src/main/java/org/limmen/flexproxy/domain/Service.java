@@ -19,6 +19,9 @@ public class Service {
   
   private boolean debug;
 
+  @XmlElement(name = "save_posts")
+  private boolean savePosts;
+
   @XmlElement(name = "proxy_url")
   private String proxyUrl;
 
