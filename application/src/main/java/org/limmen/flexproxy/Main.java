@@ -31,7 +31,7 @@ public class Main {
 
     configuration.getServices().forEach(service -> {
 
-      log.info("Mounting service '{}' at {} for proxy {}", service.getName(), service.getMountpoint(), service.getProxyUrl());
+      log.info("Mounting service '{}' at {} for proxy {} (debug={})", service.getName(), service.getMountpoint(), service.getProxyUrl(), service.isDebug());
       ServletHolder holder = new ServletHolder(EndpointWrapperServlet.builder()
           .service(service)          
           .build());
