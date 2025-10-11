@@ -9,11 +9,12 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.limmen.flexproxy.config.ConfigReader;
 import org.limmen.flexproxy.domain.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class Main {
+
+  private static final Logger log = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) throws Exception {
 

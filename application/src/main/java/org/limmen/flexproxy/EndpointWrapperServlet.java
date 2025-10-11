@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import org.limmen.flexproxy.domain.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.limmen.flexproxy.domain.Endpoint;
 
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class EndpointWrapperServlet extends HttpServlet {
+
+  private static final Logger log = LoggerFactory.getLogger(EndpointWrapperServlet.class);
 
   private static final long serialVersionUID = -1;
 
@@ -21,9 +21,33 @@ public class EndpointWrapperServlet extends HttpServlet {
 
   private final ProxyServlet proxyServlet;
 
-  @Builder
-  public EndpointWrapperServlet(final Service service) {
-    this.service = service;
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+
+    private Service service;
+
+    public Builder() {
+    }
+
+    Builder(Service service) {
+      this.service = service;
+    }
+
+    public Builder service(Service service) {
+      this.service = service;
+      return Builder.this;
+    }
+
+    public EndpointWrapperServlet build() {
+      return new EndpointWrapperServlet(this);
+    }
+  }
+
+  public EndpointWrapperServlet(final Builder builder) {
+    this.service = builder.service;
     this.proxyServlet = ProxyServlet.builder()
         .url(service.getProxyUrl())
         .mountpoint(service.getMountpoint())
@@ -46,17 +70,17 @@ public class EndpointWrapperServlet extends HttpServlet {
     log.info("Request: {}", fullUrl);
 
     for (Endpoint endpoint : this.service.getEndpoints()) {
-      if (endpoint.getMethod().equalsIgnoreCase(req.getMethod())) {        
+      if (endpoint.getMethod().equalsIgnoreCase(req.getMethod())) {
         if (endpoint.getUrl() != null) {
           String url = endpoint.getUrl().getUrlValue();
           String match = endpoint.getUrl().getMatch();
           log.debug("url={},match={}", url, match);
           if (endpoint.getResult().canHandle(match, fullUrl.toString(), url)) {
-            
+
             log.info("Handle {} for URL '{}' on service '{}'", endpoint.getMethod(), url, service.getName());
             endpoint.getResult().handleResult(req, res);
             return;
-          }  
+          }
         } else {
           log.info("Handle {} on service '{}'", endpoint.getMethod(), service.getName());
           endpoint.getResult().handleResult(req, res);

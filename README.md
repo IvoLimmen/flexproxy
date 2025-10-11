@@ -4,8 +4,8 @@
 
 ## Prerequisites 
 
-- JDK 15 and up
-- Maven 3.6 and up
+- JDK 21 and up
+- Maven 3.9 and up
 
 ## Steps
 

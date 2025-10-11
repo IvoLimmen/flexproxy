@@ -7,11 +7,9 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
 
 @XmlRootElement
 @XmlAccessorType(FIELD)
-@Data
 public class Configuration {
 
   private int port;
@@ -19,4 +17,20 @@ public class Configuration {
   @XmlElementWrapper(name = "services")
   @XmlElement(name = "service")
   private List<Service> services = new ArrayList<>();
+
+  public int getPort() {
+      return port;
+  }
+
+  public List<Service> getServices() {
+      return services;
+  }
+
+  public void setPort(int port) {
+      this.port = port;
+  }
+
+  public void setServices(List<Service> services) {
+      this.services = services;
+  }
 }

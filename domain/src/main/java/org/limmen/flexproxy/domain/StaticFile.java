@@ -15,16 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Data
-@EqualsAndHashCode
 @XmlAccessorType(FIELD)
 @XmlRootElement(name = "statis_file")
-@Slf4j
 public class StaticFile implements Result {
+
+  private static final Logger log = LoggerFactory.getLogger(StaticFile.class);
 
   @XmlElement(name = "content_type", defaultValue = "application/json")
   private String contentType;
@@ -53,5 +51,21 @@ public class StaticFile implements Result {
 
   private Path getFile() {
     return Paths.get(getFileName());
+  }
+
+  public String getContentType() {
+      return contentType;
+  }
+
+  public String getFileName() {
+      return fileName;
+  }  
+
+  public void setContentType(String contentType) {
+      this.contentType = contentType;
+  }
+
+  public void setFileName(String fileName) {
+      this.fileName = fileName;
   }
 }

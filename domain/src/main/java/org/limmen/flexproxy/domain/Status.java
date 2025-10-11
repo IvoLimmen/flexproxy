@@ -8,16 +8,15 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Data
-@EqualsAndHashCode
+
 @XmlAccessorType(FIELD)
 @XmlRootElement(name = "status")
-@Slf4j
 public class Status implements Result {
+
+  private static final Logger log = LoggerFactory.getLogger(Status.class);
   
   @XmlElement(name = "status_code")
   private int statusCode;
@@ -28,4 +27,20 @@ public class Status implements Result {
     log.debug("Response[statusCode={},message={}]", getStatusCode(), getMessage());
     response.sendError(getStatusCode(), getMessage());
   }   
+
+  public String getMessage() {
+      return message;
+  }
+
+  public int getStatusCode() {
+      return statusCode;
+  }
+
+  public void setMessage(String message) {
+      this.message = message;
+  }
+
+  public void setStatusCode(int statusCode) {
+      this.statusCode = statusCode;
+  }
 }

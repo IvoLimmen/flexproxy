@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class ProxyServlet extends HttpServlet {
+
+  private static final Logger log = LoggerFactory.getLogger(ProxyServlet.class);
 
   private static final long serialVersionUID = -1;
   private final HttpClient client;
@@ -38,14 +39,60 @@ public class ProxyServlet extends HttpServlet {
   private final String mountpoint;
   private final AtomicInteger counter = new AtomicInteger(0);
 
-  @Builder
-  public ProxyServlet(final String url, final boolean debug, final boolean savePosts, final String mountpoint) {
-    this.url = url;
-    client = HttpClient.newBuilder().sslContext(SSLContextProvider.getSSLContext())
+  public static Builder builder() {
+    return new Builder();
+  }
+  
+  public static class Builder {
+
+    private boolean debug;
+    private boolean savePosts;
+    private String url;
+    private String mountpoint;
+
+    public Builder() {
+    }
+
+    Builder(boolean debug, boolean savePosts, String url, String mountpoint) {
+      this.debug = debug;
+      this.savePosts = savePosts;
+      this.url = url;
+      this.mountpoint = mountpoint;
+    }
+
+    public Builder debug(boolean debug) {
+      this.debug = debug;
+      return Builder.this;
+    }
+
+    public Builder savePosts(boolean savePosts) {
+      this.savePosts = savePosts;
+      return Builder.this;
+    }
+
+    public Builder url(String url) {
+      this.url = url;
+      return Builder.this;
+    }
+
+    public Builder mountpoint(String mountpoint) {
+      this.mountpoint = mountpoint;
+      return Builder.this;
+    }
+
+    public ProxyServlet build() {
+
+      return new ProxyServlet(this);
+    }
+  }
+
+  private ProxyServlet(Builder builder) {
+    this.debug = builder.debug;
+    this.savePosts = builder.savePosts;
+    this.url = builder.url;
+    this.mountpoint = builder.mountpoint;
+    this.client = HttpClient.newBuilder().sslContext(SSLContextProvider.getSSLContext())
         .connectTimeout(Duration.ofSeconds(30)).build();
-    this.mountpoint = mountpoint;
-    this.debug = debug;
-    this.savePosts = savePosts;
   }
 
   @Override
@@ -125,15 +172,15 @@ public class ProxyServlet extends HttpServlet {
 
   private Path createFileName() {
     Path path = Paths.get(
-        System.getProperty("user.dir"), 
-        "posts", 
+        System.getProperty("user.dir"),
+        "posts",
         this.mountpoint.replaceAll("/", "_"),
         "" + counter.incrementAndGet());
 
     if (!path.getParent().toFile().exists()) {
       try {
         Files.createDirectories(path.getParent());
-      } catch(IOException e) {
+      } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
